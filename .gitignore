@@ -1,0 +1,12 @@
+target/
+.m2-repository/
+.mvn-settings.xml
+.idea/
+*.iml
+.vscode/
+.env
+application-local.yml
+application-*.local.yml
+*.log
+hs_err_pid*
+test/
