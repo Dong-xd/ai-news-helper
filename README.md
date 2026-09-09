@@ -7,7 +7,7 @@
 每天 `08:00`（`Asia/Shanghai`）执行：
 
 ```text
-定时触发 → 抓取 RSS/Atom → 内存过滤去重 → 通义千问生成中文 Markdown 摘要 → Thymeleaf 渲染邮件 → SMTP 发送
+定时触发 → 抓取 RSS/Atom → 内存过滤去重 → 通义千问生成结构化 JSON格式 → 程序按引用标记转换为邮件内容 → Thymeleaf 渲染邮件 → SMTP 发送
 ```
 
 项目不使用数据库，也不持久化新闻、摘要、发送记录或任务状态。所有数据只存在于一次任务执行期间。
@@ -32,16 +32,17 @@
 - `news.schedule.cron`：定时表达式，默认每天 08:00
 - `news.schedule.zone`：定时任务时区
 - `news.rss.sources`：RSS 来源列表及 `enabled` 开关
-- `news.rss.domestic-ratio`：国内新闻占比，默认 `0.3`；每日报告 15 条时按国内 5 条、国际 10 条配额选择
 - `news.rss.max-concurrent-sources`：RSS 来源最大并发数，默认 `4`
 - `news.rss.fetch-timeout-seconds`：整批 RSS 抓取超时时间，默认 `60` 秒
 - `news.rss.window-hours`：新闻时间窗口，默认 24 小时
 - `news.rss.max-items`：每日报告最多 15 条
 - `news.ai.system-prompt`：AI 系统提示词
-- AI 输出会生成新闻概览；国外新闻标题翻译为中文，产品、公司和模型名称保留官方写法
+- AI 按配置提示词输出包含四个固定数组的 JSON；程序会严格校验字段、摘要长度、北京时间和原文引用，再直接交给邮件模板渲染
+- AI 输出中的 `url` 只接受输入 RSS 原文链接或 `Nxx` 引用标记，程序不会采用模型新生成的链接
+- 国外新闻标题和摘要翻译为中文，产品、公司和模型名称保留官方写法
 - AI 摘要会按重要性“高 → 中 → 低”排序，同等级按发布时间倒序
-- `news.ai.minimum-summary-chars` 与 `news.ai.maximum-summary-chars`：每条新闻摘要长度范围，默认 80-150 字
 - `spring.ai.dashscope.chat.options.model`：通义千问模型
+- `spring.ai.dashscope.read-timeout`：DashScope 单次读取超时时间，默认 60 秒，可通过 `AI_DASHSCOPE_READ_TIMEOUT_MS` 调整
 - `news.mail.from`、`news.mail.to`：发件人和收件人
 - `news.mail.brand-name`：邮件头部和底部显示的品牌名称，默认 `AI速递`
 - `news.mail.show-original-links` 与 `news.mail.trusted-link-domains`：原文链接展示开关和可选可信域名白名单；默认展示所有经过 HTTP(S) 校验的新闻标题链接，并清理跟踪参数

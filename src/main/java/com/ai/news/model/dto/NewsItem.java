@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 import java.util.Objects;
 
+/**
+ * RSS 来源解析出的单条原始新闻数据。
+ */
 @Data
 @NoArgsConstructor
 public class NewsItem {
@@ -46,11 +49,32 @@ public class NewsItem {
      */
     private String content;
 
+    /**
+     * 创建默认归类为国际新闻的原始新闻对象。
+     *
+     * @param sourceId 新闻源唯一标识
+     * @param sourceName 新闻源名称
+     * @param title 新闻标题
+     * @param link 原文链接
+     * @param publishedAt 发布时间
+     * @param content 正文摘要
+     */
     @Builder
     public NewsItem(String sourceId, String sourceName, String title, String link, Instant publishedAt, String content) {
         this(sourceId, sourceName, title, link, publishedAt, content, "国际");
     }
 
+    /**
+     * 创建一条原始新闻，并校验摘要流程必需的字段。
+     *
+     * @param sourceId 新闻源唯一标识
+     * @param sourceName 新闻源名称
+     * @param title 新闻标题
+     * @param link 原文链接
+     * @param publishedAt 发布时间
+     * @param content 正文摘要，可为空
+     * @param region 新闻来源区域
+     */
     public NewsItem(String sourceId, String sourceName, String title, String link, Instant publishedAt, String content,
             String region) {
         this.sourceId = Objects.requireNonNull(sourceId);
