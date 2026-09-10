@@ -26,7 +26,7 @@ public class NewsScheduleTask {
      *
      * <p>当前 Cron 表达式用于开发阶段的周期触发，实际运行频率可根据部署配置调整。</p>
      */
-    @Scheduled(cron = "0 */3 * * * ?", zone = "${news.schedule.zone}")
+    @Scheduled(cron = "${news.schedule.cron}", zone = "${news.schedule.zone}")
     public void run() {
         log.info("开始执行定时 AI 新闻摘要任务");
         newsDigestService.executeDailyDigest();
